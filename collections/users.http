@@ -1,3 +1,15 @@
+@baseUrl = http://localhost:4000/api
+
+@contentType = application/json
 ### read user
-GET http://localhost:4000/api/users/12345/project/1235
-Content-Type: application/json
+GET {{baseUrl}}/users/12345/project/1235
+Content-Type: {{contentType}}
+
+### read users paginated
+GET {{baseUrl}}/users?page=0&page_size=10 
+Content-Type: {{contentType}}
+
+### create user
+POST  {{baseUrl}}/users
+Content-Type:  {{contentType}}
+{}
