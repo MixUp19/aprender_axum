@@ -2,6 +2,7 @@ use core::panic;
 use std::net::SocketAddr;
 
 use axum::{response::IntoResponse, routing};
+use f5a_services::users;
 
 #[tokio::main]
 async fn main() {
@@ -14,7 +15,11 @@ async fn main() {
     });
 
     let router = axum::Router::new()
-        .route("/", axum::routing::get(root_handler).post(post_handler));
+        .route("/", axum::routing::get(root_handler).post(post_handler))
+        .route(
+            "/api/users/{user_id}/project/{project_id}" , 
+            axum::routing::get(users::handlers::read_user
+        ));
     
     println!("Listening on {}", listener.local_addr().unwrap());
     
