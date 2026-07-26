@@ -16,11 +16,13 @@ async fn main() {
 
     let router = axum::Router::new()
         .route("/", axum::routing::get(root_handler).post(post_handler))
-        .route("/api/users", axum::routing::get(users::handlers::read_users))
+        .route("/api/users", 
+        axum::routing::get(users::handlers::read_users)
+            .post(users::handlers::create_user)
+        )
         .route(
             "/api/users/{user_id}" , 
             axum::routing::get(users::handlers::read_user)
-            .post(users::handlers::create_user)
         );
     
     println!("Listening on {}", listener.local_addr().unwrap());

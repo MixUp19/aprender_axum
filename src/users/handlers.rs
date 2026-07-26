@@ -1,9 +1,11 @@
-use axum::{extract::Path, response::IntoResponse};
+use axum::{Json, extract::{Path, Query}, response::IntoResponse};
+
+use crate::users::om::{CreateUserParams, CreatedUser, Pagination};
 
 
 
 pub async fn read_user(Path(user_id):Path<u32>) -> impl IntoResponse{
-    format!("*fetching user with id: {}, project_id: {}", user_id,project_id)
+    format!("*fetching user with id: {}", user_id)
 }
 
 pub async fn read_users (
@@ -16,6 +18,9 @@ pub async fn read_users (
 
 pub async fn create_user(
     Json(payload): Json<CreateUserParams>
-){ 
-    format!("*creating a new user with username: {}", payload.username)
+) -> impl IntoResponse
+{ 
+    println!("*creating a new user with username: {}", payload.username);
+
+    Json(CreatedUser {id:99})
 }
