@@ -2,11 +2,11 @@
 
 @contentType = application/json
 ### read user
-GET {{baseUrl}}/users/12345/project/1235
+GET {{baseUrl}}/users/1
 Content-Type: {{contentType}}
 
 ### read users paginated
-GET {{baseUrl}}/users?page=0&page_size=10 
+GET {{baseUrl}}/users?page=0&page_size=10
 Content-Type: {{contentType}}
 
 ### create user
@@ -14,6 +14,29 @@ POST  {{baseUrl}}/users
 Content-Type:  {{contentType}}
 
 {
-    "username": "hola",
-    "name": "Pedro"
+    "username": "Ayala",
+    "fullName": "Lolita"
+}
+ 
+#### update user
+PUT  {{baseUrl}}/users/1
+Content-Type:  {{contentType}}
+
+{
+    "username": "xX_TheGamerPlayer_Xx",
+    "fullName": "Osuna",
+    "disabled": true
+}
+
+#### delete user
+DELETE   {{baseUrl}}/users/5
+Content-Type:  {{contentType}}
+
+#### partial user update
+PATCH   {{baseUrl}}/users/3
+Content-Type:  {{contentType}}
+
+{
+    "username": "Maluma",
+    "disabled": true
 }

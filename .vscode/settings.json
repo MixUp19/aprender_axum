@@ -1,0 +1,15 @@
+{
+    "sqltools.connections": [
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "2806:269:483:80f7::3",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "f5a_db",
+            "database": "f5a_db",
+            "username": "postgres"
+        }
+    ]
+}

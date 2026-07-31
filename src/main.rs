@@ -1,11 +1,25 @@
 use core::panic;
-use std::net::SocketAddr;
+use std::{env, net::SocketAddr};
 
 use axum::{response::IntoResponse, routing};
-use f5a_services::users;
+use f5a_services::{context::AppContext, users};
+use schemas::user;
+use sea_orm::Database;
 
 #[tokio::main]
 async fn main() {
+    dotenvy::dotenv().ok();
+
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set in env");
+
+    println!("db url: {}",database_url);
+
+    let conn = Database::connect(database_url)
+        .await
+        .expect("Failed to connect to database");
+
+    let ctx = AppContext {conn};
+
     let port = 4000;
     let addr = SocketAddr::from(([0,0,0,0], port));
 
@@ -23,7 +37,11 @@ async fn main() {
         .route(
             "/api/users/{user_id}" , 
             axum::routing::get(users::handlers::read_user)
-        );
+            .put(users::handlers::update_user)
+            .delete(users::handlers::delete_user)
+            .patch(users::handlers::partial_update_user)
+        )
+        .with_state(ctx);
     
     println!("Listening on {}", listener.local_addr().unwrap());
     
