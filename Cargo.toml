@@ -13,3 +13,4 @@ serde = { version = "1.0.229", features = ["derive"]}
 dotenvy = { version = "0.15.7"}
 sea-orm = {version = "2.0.0", features = ["sqlx-postgres", "runtime-tokio-rustls"]}
 schemas = { path = "./schemas"}
+validator = { version = "0.21.0", features =["derive"]}

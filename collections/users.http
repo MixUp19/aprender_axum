@@ -15,7 +15,12 @@ Content-Type:  {{contentType}}
 
 {
     "username": "Ayala",
-    "fullName": "Lolita"
+    "email": "",
+    "fullName": "Lolita",
+    "website": "",
+    "age": 0,
+    "password": "",
+    "confirmPassword": ""
 }
  
 #### update user
@@ -33,7 +38,7 @@ DELETE   {{baseUrl}}/users/5
 Content-Type:  {{contentType}}
 
 #### partial user update
-PATCH   {{baseUrl}}/users/3
+PATCH  {{baseUrl}}/users/3
 Content-Type:  {{contentType}}
 
 {

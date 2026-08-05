@@ -3,6 +3,7 @@ use axum::{
 };
 use schemas::user::{self, Model};
 use sea_orm::{ActiveModelTrait, ActiveValue, DbConn, EntityTrait, IntoActiveModel, ModelTrait, PaginatorTrait, sea_query::value::prelude::chrono};
+use validator::Validate;
 
 use crate::{
     context::AppContext, error::ApiError, users::om::{CreateUserParams, CreatedUser, Pagination, PartialUserParams, UpdateUserParams, UserPage},
@@ -46,6 +47,8 @@ pub async fn create_user(
     Json(payload): Json<CreateUserParams>,
 ) -> Result<Json<CreatedUser>, ApiError> {
     println!("*creating a new user with username: {}", payload.username);
+
+    payload.validate()?;
 
     let model = schemas::user::ActiveModel {
         id: ActiveValue::NotSet,
