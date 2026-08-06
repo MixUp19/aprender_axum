@@ -1,2 +1,7 @@
 pub mod handlers;
 pub mod om;
+
+pub mod application;
+pub mod domain;
+pub mod http;
+pub mod persistence;
