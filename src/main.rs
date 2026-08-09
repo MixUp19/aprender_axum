@@ -35,7 +35,7 @@ async fn main() {
         )
         .route(
             "/api/users/{user_id}" , 
-            axum::routing::get(users::handlers::read_user)
+            axum::routing::get(users::http::handlers::read_user)
             .put(users::handlers::update_user)
             .delete(users::handlers::delete_user)
             .patch(users::handlers::partial_update_user)

@@ -1,4 +1,3 @@
-
 use axum::{
     Json, extract::{Path, Query, State}, response::NoContent,
 };
@@ -6,19 +5,10 @@ use schemas::user::{Model};
 use sea_orm::{ActiveModelTrait, ActiveValue, DbConn, EntityTrait, IntoActiveModel, ModelTrait, PaginatorTrait};
 
 use crate::{
-    context::AppContext, error::ApiError, users::{ om::{Pagination, PartialUserParams, UpdateUserParams, UserPage}},
+    context::AppContext, error::ApiError, users::{om::{Pagination, PartialUserParams, UpdateUserParams, UserPage}},
 };
 
-pub async fn read_user(
-    State(ctx): State<AppContext>,
-    Path(user_id): Path<i32>
-) -> Result<Json<UserPage>, ApiError> {
-    println!("*fetching user with id: {}", user_id);
 
-    let model  = get_user(&ctx.conn, user_id).await?;
-
-    Ok(Json(model.into()))
-}
 
 pub async fn read_users(
     State(ctx): State<AppContext>,
