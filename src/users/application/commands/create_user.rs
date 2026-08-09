@@ -1,3 +1,9 @@
+use std::sync::Arc;
+
+use sea_orm::{ActiveModelTrait, ActiveValue, DatabaseConnection, sea_query::value::prelude::chrono};
+use validator::Validate;
+
+use crate::error::ApiError;
 
 #[derive(Validate)]
 pub struct CreateUserCommand {
@@ -21,7 +27,7 @@ pub struct CreateUserCommand {
     #[validate(url(message = "website url is not valid"))]
     pub website: String,
 
-    #[validate(range(min=18, max = 100, message = "age must be between 18 and 100"))]
+    #[validate(range(min = 18, max = 100, message = "age must be between 18 and 100"))]
     pub age: u8,
 
     #[validate(custom(function = "crate::validators::password_strength"))]
@@ -29,6 +35,8 @@ pub struct CreateUserCommand {
 
     #[validate(must_match(other = "password", message = "password do not match"))]
     pub confirm_password: String,
+
+    pub creator_id: i32
 }
 
 pub struct CreateUserCommandHandler {
@@ -36,21 +44,21 @@ pub struct CreateUserCommandHandler {
 }
 
 impl CreateUserCommandHandler {
-    pub async fn handler(&self, command:CreateUserCommand) -> Result<i32, ApiError> {
+    pub async fn handle(&self, command: CreateUserCommand) -> Result<i32, ApiError> {
         command.validate()?;
 
         let model = schemas::user::ActiveModel {
-        id: ActiveValue::NotSet,
-        username: ActiveValue::Set(command.username),
-        full_name: ActiveValue::Set(command.full_name),
-        password: ActiveValue::Set("1234".into()),
-        disabled: ActiveValue::Set(true),
-        created_at: ActiveValue::Set(chrono::Utc::now().naive_utc()),
-        creator_id: ActiveValue::Set(1),
-    }
-    .insert(self.conn.as_ref())
-    .await?;
-    }
+            id: ActiveValue::NotSet,
+            username: ActiveValue::Set(command.username),
+            full_name: ActiveValue::Set(command.full_name),
+            password: ActiveValue::Set("1234".into()),
+            disabled: ActiveValue::Set(true),
+            created_at: ActiveValue::Set(chrono::Utc::now().naive_utc()),
+            creator_id: ActiveValue::Set(1),
+        }
+        .insert(self.conn.as_ref())
+        .await?;
 
-    Ok(model.id)
+        Ok(model.id)
+    }
 }

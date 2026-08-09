@@ -1,12 +1,12 @@
+
 use axum::{
     Json, extract::{Path, Query, State}, response::NoContent,
 };
-use schemas::user::{self, Model};
-use sea_orm::{ActiveModelTrait, ActiveValue, DbConn, EntityTrait, IntoActiveModel, ModelTrait, PaginatorTrait, sea_query::value::prelude::chrono};
-use validator::Validate;
+use schemas::user::{Model};
+use sea_orm::{ActiveModelTrait, ActiveValue, DbConn, EntityTrait, IntoActiveModel, ModelTrait, PaginatorTrait};
 
 use crate::{
-    context::AppContext, error::ApiError, users::om::{CreateUserParams, CreatedUser, Pagination, PartialUserParams, UpdateUserParams, UserPage},
+    context::AppContext, error::ApiError, users::{ om::{Pagination, PartialUserParams, UpdateUserParams, UserPage}},
 };
 
 pub async fn read_user(
@@ -42,28 +42,6 @@ pub async fn read_users(
     Ok(Json(user_page))
 }
 
-pub async fn create_user(
-    State(ctx): State<AppContext>,
-    Json(payload): Json<CreateUserParams>,
-) -> Result<Json<CreatedUser>, ApiError> {
-    println!("*creating a new user with username: {}", payload.username);
-
-    payload.validate()?;
-
-    let model = schemas::user::ActiveModel {
-        id: ActiveValue::NotSet,
-        username: ActiveValue::Set(payload.username),
-        full_name: ActiveValue::Set(payload.full_name),
-        password: ActiveValue::Set("1234".into()),
-        disabled: ActiveValue::Set(true),
-        created_at: ActiveValue::Set(chrono::Utc::now().naive_utc()),
-        creator_id: ActiveValue::Set(1),
-    }
-    .insert(&ctx.conn)
-    .await?;
-
-    Ok(Json(CreatedUser { id: model.id }))
-}
 
 pub async fn update_user(
     State(ctx): State<AppContext>,

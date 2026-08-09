@@ -2,12 +2,12 @@ use std::borrow::Cow;
 
 use axum::{
     Json,
-    http::{Response, StatusCode},
+    http::{ StatusCode},
     response::IntoResponse,
 };
 use validator::{ValidationError, ValidationErrors};
 
-use crate::shared::response::{Field, ProblemDetails, problem_details};
+use crate::shared::response::{Field, ProblemDetails};
 
 const INVALID_DEFAULT_MESSAGE: Cow<'static, str> = Cow::Borrowed("Invalid Information");
 

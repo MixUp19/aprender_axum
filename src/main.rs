@@ -1,9 +1,8 @@
 use core::panic;
 use std::{env, net::SocketAddr};
 
-use axum::{response::IntoResponse, routing};
+use axum::{response::IntoResponse};
 use f5a_services::{context::AppContext, users};
-use schemas::user;
 use sea_orm::Database;
 
 #[tokio::main]
@@ -32,7 +31,7 @@ async fn main() {
         .route("/", axum::routing::get(root_handler).post(post_handler))
         .route("/api/users", 
         axum::routing::get(users::handlers::read_users)
-            .post(users::handlers::create_user)
+            .post(users::http::handlers::create_user)
         )
         .route(
             "/api/users/{user_id}" , 
