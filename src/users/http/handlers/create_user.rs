@@ -2,7 +2,15 @@ use std::sync::Arc;
 
 use axum::{Json, extract::State};
 
-use crate::{context::AppContext, error::ApiError, users::{application::commands::{CreateUserCommand, CreateUserCommandHandler}, om::{CreateUserParams, CreatedUser}}};
+use crate::{
+    context::AppContext,
+    error::ApiError,
+    users::{
+        application::commands::{CreateUserCommand, CreateUserCommandHandler},
+        om::{CreateUserParams, CreatedUser},
+        persistence::repository::SeaOrmUserRepository,
+    },
+};
 
 pub async fn create_user(
     State(ctx): State<AppContext>,
@@ -18,12 +26,13 @@ pub async fn create_user(
         age: payload.age,
         password: payload.password,
         confirm_password: payload.confirm_password,
-        creator_id: 1
+        creator_id: 1,
     };
 
     let user_id = CreateUserCommandHandler {
-        conn: Arc::new(ctx.conn)
-    }.handle(command)
+        user_repo: SeaOrmUserRepository::new(Arc::new(ctx.conn)),
+    }
+    .handle(command)
     .await?;
 
     Ok(Json(CreatedUser { id: user_id }))

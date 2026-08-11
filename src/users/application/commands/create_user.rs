@@ -1,9 +1,7 @@
-use std::sync::Arc;
-
-use sea_orm::{ActiveModelTrait, ActiveValue, DatabaseConnection, sea_query::value::prelude::chrono};
+use chrono;
 use validator::Validate;
 
-use crate::error::ApiError;
+use crate::{error::ApiError, users::persistence::repository::{SaveNewUser, SeaOrmUserRepository}};
 
 #[derive(Validate)]
 pub struct CreateUserCommand {
@@ -40,24 +38,27 @@ pub struct CreateUserCommand {
 }
 
 pub struct CreateUserCommandHandler {
-    pub conn: Arc<DatabaseConnection>,
+    pub user_repo: SeaOrmUserRepository,
+    //pub conn: Arc<DatabaseConnection>,
 }
 
 impl CreateUserCommandHandler {
     pub async fn handle(&self, command: CreateUserCommand) -> Result<i32, ApiError> {
         command.validate()?;
 
-        let model = schemas::user::ActiveModel {
-            id: ActiveValue::NotSet,
-            username: ActiveValue::Set(command.username),
-            full_name: ActiveValue::Set(command.full_name),
-            password: ActiveValue::Set("1234".into()),
-            disabled: ActiveValue::Set(true),
-            created_at: ActiveValue::Set(chrono::Utc::now().naive_utc()),
-            creator_id: ActiveValue::Set(1),
-        }
-        .insert(self.conn.as_ref())
-        .await?;
+        let created_at = chrono::Utc::now();
+
+        let change = SaveNewUser {
+            username: command.username,
+            full_name: command.full_name,
+            password: command.password,
+            disabled: false,
+            created_at: created_at.naive_local(),
+            creator_id: command.creator_id
+        };
+        
+        let model =self.user_repo.insert(change).await?;
+        
 
         Ok(model.id)
     }
