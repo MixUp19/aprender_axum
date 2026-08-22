@@ -3,12 +3,8 @@ use std::sync::Arc;
 use axum::{Json, extract::State};
 
 use crate::{
-    context::AppContext,
-    error::ApiError,
-    users::{
-        application::commands::{CreateUserCommand, CreateUserCommandHandler},
-        om::{CreateUserParams, CreatedUser},
-        persistence::repository::SeaOrmUserRepository,
+    context::AppContext, error::ApiError, users::{
+        application::commands::{CreateUserCommand, CreateUserCommandHandler}, om::{CreateUserParams, CreatedUser}, persistence::{uow::UnitOfWorkFactory},
     },
 };
 
@@ -30,7 +26,7 @@ pub async fn create_user(
     };
 
     let user_id = CreateUserCommandHandler {
-        user_repo: SeaOrmUserRepository::new(Arc::new(ctx.conn)),
+        uow_factory: UnitOfWorkFactory::new(Arc::new(ctx.conn)),
     }
     .handle(command)
     .await?;

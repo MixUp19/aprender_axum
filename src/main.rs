@@ -30,15 +30,15 @@ async fn main() {
     let router = axum::Router::new()
         .route("/", axum::routing::get(root_handler).post(post_handler))
         .route("/api/users", 
-        axum::routing::get(users::handlers::read_users)
+        axum::routing::get(users::http::handlers::read_users)
             .post(users::http::handlers::create_user)
         )
         .route(
             "/api/users/{user_id}" , 
             axum::routing::get(users::http::handlers::read_user)
-            .put(users::handlers::update_user)
-            .delete(users::handlers::delete_user)
-            .patch(users::handlers::partial_update_user)
+            .put(users::http::handlers::update_user)
+            .delete(users::http::handlers::delete_user)
+            .patch(users::http::handlers::partial_update_user)
         )
         .with_state(ctx);
     

@@ -1,4 +1,4 @@
-use sea_orm::sqlx::types::chrono::{DateTime, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]

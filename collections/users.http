@@ -15,33 +15,32 @@ Content-Type:  {{contentType}}
 
 {
     "username": "Ayala",
-    "email": "",
+    "email": "ayala@ayala.com",
     "fullName": "Lolita",
-    "website": "",
-    "age": 0,
-    "password": "",
-    "confirmPassword": ""
+    "website": "https://www.ayala.com/",
+    "age": 20,
+    "password": "123456789012",
+    "confirmPassword": "123456789012"
 }
  
 #### update user
-PUT  {{baseUrl}}/users/1
+PUT  {{baseUrl}}/users/6
 Content-Type:  {{contentType}}
 
 {
-    "username": "xX_TheGamerPlayer_Xx",
-    "fullName": "Osuna",
+    "username": "xX_TheAyalaPlayer_Xx",
+    "fullName": "Ayala pro",
     "disabled": true
 }
 
 #### delete user
-DELETE   {{baseUrl}}/users/5
+DELETE   {{baseUrl}}/users/4
 Content-Type:  {{contentType}}
 
 #### partial user update
-PATCH  {{baseUrl}}/users/3
+PATCH  {{baseUrl}}/users/1
 Content-Type:  {{contentType}}
 
 {
-    "username": "Maluma",
-    "disabled": true
+    "disabled": false
 }

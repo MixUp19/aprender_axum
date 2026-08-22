@@ -1,7 +1,7 @@
 use chrono;
 use validator::Validate;
 
-use crate::{error::ApiError, users::persistence::repository::{SaveNewUser, SeaOrmUserRepository}};
+use crate::{error::ApiError, users::persistence::{repository::{SaveNewUser}, uow::UnitOfWorkFactory}};
 
 #[derive(Validate)]
 pub struct CreateUserCommand {
@@ -38,13 +38,16 @@ pub struct CreateUserCommand {
 }
 
 pub struct CreateUserCommandHandler {
-    pub user_repo: SeaOrmUserRepository,
-    //pub conn: Arc<DatabaseConnection>,
+    pub uow_factory: UnitOfWorkFactory,
 }
 
 impl CreateUserCommandHandler {
     pub async fn handle(&self, command: CreateUserCommand) -> Result<i32, ApiError> {
         command.validate()?;
+
+        let uow = self.uow_factory.begin().await?;
+
+        let user_repo = uow.user_repository();
 
         let created_at = chrono::Utc::now();
 
@@ -57,8 +60,10 @@ impl CreateUserCommandHandler {
             creator_id: command.creator_id
         };
         
-        let model =self.user_repo.insert(change).await?;
+        let model = user_repo.insert(change).await?;
         
+
+        uow.commit().await?;
 
         Ok(model.id)
     }
