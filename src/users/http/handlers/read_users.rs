@@ -11,7 +11,7 @@ pub async fn read_users(
 
     let query = ReadUsersQuery { pagination };
 
-    let uow_factory = UnitOfWorkFactory::new(Arc::new(ctx.conn));
+    let uow_factory = UnitOfWorkFactory::new(Arc::clone(&ctx.conn));
 
     let read_users_query_handler = ReadUsersQueryHandler {uow_factory: Arc::new(uow_factory)};
 

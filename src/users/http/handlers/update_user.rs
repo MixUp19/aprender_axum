@@ -27,7 +27,7 @@ pub async fn update_user(
         full_name: payload.full_name,
     };
 
-    let uow_factory = UnitOfWorkFactory::new(Arc::new(ctx.conn));
+    let uow_factory = UnitOfWorkFactory::new(Arc::clone(&ctx.conn));
 
     let handle = UpdateUserCommandHandler { uow_factory };
     handle.handle(command).await?;

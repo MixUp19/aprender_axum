@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use secrecy::SecretString;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -7,7 +8,7 @@ pub struct Pagination {
     pub page_size: u64,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateUserParams {
     pub full_name: String,
@@ -15,11 +16,11 @@ pub struct CreateUserParams {
     pub username: String,
     pub website: String,
     pub age: u8,
-    pub password: String,
-    pub confirm_password: String,
+    pub password: SecretString,
+    pub confirm_password: SecretString,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct CreatedUser {
     pub id: i32,
 }

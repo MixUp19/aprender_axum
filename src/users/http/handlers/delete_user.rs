@@ -11,7 +11,7 @@ pub async fn delete_user(
 
     let command = DeleteUserCommand {id: user_id};
 
-    let uow_factory = UnitOfWorkFactory::new(Arc::new(ctx.conn));
+    let uow_factory = UnitOfWorkFactory::new(Arc::clone(&ctx.conn));
 
     let command_handler = DeleteUserCommandHandler {uow_factory};
 

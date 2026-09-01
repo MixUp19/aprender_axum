@@ -6,12 +6,48 @@ edition = "2024"
 [workspace]
 members = ["migration", "schemas"]
 
-[dependencies]
-tokio = {version = "1.53.1", features = ["rt-multi-thread", "macros", "net"]}
+[workspace.dependencies]
+tokio = { version = "1.53.1", features = ["rt-multi-thread", "macros", "net"] }
 axum = { version = "0.8.9" }
-serde = { version = "1.0.229", features = ["derive"]}
-dotenvy = { version = "0.15.7"}
-sea-orm = {version = "2.0.0", features = ["sqlx-postgres", "runtime-tokio-rustls"]}
-schemas = { path = "./schemas"}
-validator = { version = "0.21.0", features =["derive"]}
-chrono = { version = "0.4.45"}
+serde = { version = "1.0.229", features = ["derive"] }
+dotenvy = { version = "0.15.7" }
+sea-orm = { version = "2.0.2", features = [
+    "sqlx-postgres",
+    "sqlx-sqlite",
+    "runtime-tokio-rustls",
+] }
+schemas = { path = "./schemas" }
+validator = { version = "0.21.0", features = ["derive"] }
+chrono = { version = "0.4.45" }
+tracing = { version = "0.1.44" }
+tracing-subscriber = { version = "0.3.23" }
+tower-http = { version = "0.7.0", features = [
+    "trace",
+    "propagate-header",
+    "request-id",
+] }
+tower = { version = "0.5.3", features = ["util"] }
+thiserror = { version = "2.0.19"}
+secrecy = { version = "0.10.3", features = ["serde"]}
+
+[dependencies]
+tokio = { workspace = true }
+axum = { workspace = true }
+serde = { workspace = true }
+dotenvy = { workspace = true }
+sea-orm = { workspace = true }
+schemas = { workspace = true }
+validator = { workspace = true }
+chrono = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+tower-http = { workspace = true }
+tower = { workspace = true }
+thiserror = { workspace = true }
+secrecy = { workspace = true }
+
+[dev-dependencies]
+tower = { workspace = true }
+mime = { version = "0.3.17" }
+serde_json = { version = "1.0.151" }
+http-body-util = { version = "0.1.5" }

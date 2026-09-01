@@ -1,62 +1,58 @@
 use core::panic;
-use std::{env, net::SocketAddr};
+use std::{env, net::SocketAddr, sync::Arc};
 
-use axum::{response::IntoResponse};
-use f5a_services::{context::AppContext, users};
+use axum::{http::HeaderName};
+use f5a_services::{context::AppContext, routes::{self}};
 use sea_orm::Database;
+use tower::ServiceBuilder;
+use tower_http::{
+    propagate_header::{PropagateHeaderLayer}, request_id::{MakeRequestUuid, SetRequestIdLayer}, trace::{DefaultMakeSpan, TraceLayer},
+};
 
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
 
+    tracing_subscriber::fmt()
+        .compact()
+        .with_max_level(tracing::Level::DEBUG)
+        .init();
+
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set in env");
 
-    println!("db url: {}",database_url);
+    println!("db url: {}", database_url);
 
     let conn = Database::connect(database_url)
         .await
         .expect("Failed to connect to database");
 
-    let ctx = AppContext {conn};
+    let ctx = AppContext { conn: Arc::new(conn) };
 
     let port = 4000;
-    let addr = SocketAddr::from(([0,0,0,0], port));
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
 
-    let listener = tokio::net::TcpListener::bind(addr).await
-    .unwrap_or_else(|e|{
-        panic!("failed to bind to {}:{}", addr, e);
-    });
+    let listener = tokio::net::TcpListener::bind(addr)
+        .await
+        .unwrap_or_else(|e| {
+            panic!("failed to bind to {}:{}", addr, e);
+        });
 
-    let router = axum::Router::new()
-        .route("/", axum::routing::get(root_handler).post(post_handler))
-        .route("/api/users", 
-        axum::routing::get(users::http::handlers::read_users)
-            .post(users::http::handlers::create_user)
+    let service_layer = ServiceBuilder::new()
+        .layer(SetRequestIdLayer::x_request_id(MakeRequestUuid))
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(DefaultMakeSpan::default().include_headers(true)),
         )
-        .route(
-            "/api/users/{user_id}" , 
-            axum::routing::get(users::http::handlers::read_user)
-            .put(users::http::handlers::update_user)
-            .delete(users::http::handlers::delete_user)
-            .patch(users::http::handlers::partial_update_user)
-        )
-        .with_state(ctx);
+        .layer(
+            PropagateHeaderLayer::new(HeaderName::from_static("x-request-id"))
+        );
     
-    println!("Listening on {}", listener.local_addr().unwrap());
+    let router = routes::router().with_state(ctx).layer(service_layer);
     
+    tracing::info!(addr = ?listener.local_addr().unwrap(), app_name = "f5a_services_es","Listening");
 
-    axum::serve(listener, router).await.unwrap_or_else(|err|{
+    axum::serve(listener, router).await.unwrap_or_else(|err| {
         panic!("failed to start server: {}", err);
     });
 }
 
-async fn root_handler() -> impl IntoResponse{
-    println!("processing root handler");
-    String::from("perritos peludos")
-}
-
-
-async fn post_handler() -> impl IntoResponse{
-    println!("processing post handler");
-    String::from("perritos peludos")
-}

@@ -21,7 +21,7 @@ pub async fn partial_update_user(
     Path(user_id): Path<i32>,
     Json(payload): Json<PartialUserParams>,
 ) -> Result<NoContent, ApiError> {
-    let uow_factory = UnitOfWorkFactory::new(Arc::new(ctx.conn));
+    let uow_factory = UnitOfWorkFactory::new(Arc::clone(&ctx.conn));
 
     let command = PartialUpdateUserCommand {
         id: user_id,

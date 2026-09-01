@@ -15,7 +15,7 @@ pub struct UnprocessableParams(pub ValidationErrors);
 
 impl IntoResponse for UnprocessableParams {
     fn into_response(self) -> axum::response::Response {
-        println!("validation errors: {}", self.0);
+        //println!("validation errors: {}", self.0);
 
         let fields_with_errors = self.0.into_fields();
     
@@ -46,6 +46,8 @@ impl IntoFields for ValidationErrors {
 
           Field::new(&field_name,field_message,&error.code)
         }));
+
+        fields.sort_by(|a,b| a.field.to_lowercase().cmp(&b.field.to_lowercase()));
 
         fields
     }

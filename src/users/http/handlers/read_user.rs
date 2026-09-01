@@ -12,7 +12,7 @@ pub async fn read_user(
 
     let query = ReadUserQuery {user_id};
 
-    let uow_factory = UnitOfWorkFactory::new(Arc::new(ctx.conn));
+    let uow_factory = UnitOfWorkFactory::new(Arc::clone(&ctx.conn));
 
     let user_detail = ReadUserQueryHandler {
         uow_factory: Arc::new(uow_factory),

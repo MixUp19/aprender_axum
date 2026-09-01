@@ -14,13 +14,13 @@ POST  {{baseUrl}}/users
 Content-Type:  {{contentType}}
 
 {
-    "username": "Ayala",
-    "email": "ayala@ayala.com",
-    "fullName": "Lolita",
-    "website": "https://www.ayala.com/",
-    "age": 20,
-    "password": "123456789012",
-    "confirmPassword": "123456789012"
+    "username": "",
+    "email": "",
+    "fullName": "",
+    "website": "",
+    "age": 0,
+    "password": "",
+    "confirmPassword": ""
 }
  
 #### update user

@@ -4,8 +4,7 @@ use sea_orm::{
 };
 
 use crate::users::{
-    om::Pagination,
-    persistence::repository::{PartialUpdateUser, SaveNewUser, UpdateUser},
+    om::Pagination, persistence::repository::{PartialUpdateUser, SaveNewUser, UpdateUser},
 };
 
 pub struct SeaOrmUserRepository<'a, C: ConnectionTrait> {
@@ -46,7 +45,7 @@ impl<'a, C: ConnectionTrait> SeaOrmUserRepository<'a, C> {
         let model = self
             .get_user(change.id)
             .await?
-            .ok_or(DbErr::RecordNotUpdated)?;
+            .ok_or(DbErr::RecordNotFound("".to_string()))?;
         let mut active_model = model.into_active_model();
 
         active_model.full_name = ActiveValue::Set(change.full_name);
@@ -59,7 +58,7 @@ impl<'a, C: ConnectionTrait> SeaOrmUserRepository<'a, C> {
     }
 
     pub async fn delete_user(&self, id: i32) -> Result<(), DbErr> {
-        let model = self.get_user(id).await?.ok_or(DbErr::RecordNotUpdated)?;
+        let model = self.get_user(id).await?.ok_or(DbErr::RecordNotFound("".to_string()))?;
 
         model.delete(self.conn).await?;
 
@@ -70,7 +69,7 @@ impl<'a, C: ConnectionTrait> SeaOrmUserRepository<'a, C> {
         let model = self
             .get_user(change.id)
             .await?
-            .ok_or(DbErr::RecordNotUpdated)?;
+            .ok_or(DbErr::RecordNotFound("".to_string()))?;
 
         let mut active_model = model.into_active_model();
 
