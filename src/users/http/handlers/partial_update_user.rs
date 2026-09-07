@@ -27,6 +27,7 @@ pub async fn partial_update_user(
         id: user_id,
         username: payload.username,
         full_name: payload.full_name,
+        disable: payload.disabled
     };
 
     let command_handler = PartialUpdateUserCommandHandler { uow_factory };

@@ -20,6 +20,8 @@ pub struct UpdateUserCommand {
         message = "username must be between 3 and 100 characters"
     ))]
     pub username: String,
+
+    pub disabled: bool,
 }
 
 pub struct UpdateUserCommandHandler {
@@ -39,7 +41,7 @@ impl UpdateUserCommandHandler {
             id: command.id,
             username: command.username,
             full_name: command.full_name,
-            disabled: false
+            disabled: command.disabled
         };
         
         user_repo.update_user(change).await.or_else(|_| Err(ApiError::NotFound))?;

@@ -1,7 +1,8 @@
 use axum::{body::Body, http::{self, Request, StatusCode}};
+use sea_orm::EntityTrait;
 use serde_json::json;
 use tower::ServiceExt;
-use crate::{setup::TestContext, test_ext::IntoValue};
+use crate::{setup::TestContext, test_ext::IntoValue, users::migrations::insert_joaquin_user};
 
 fn update_user_url(user_id: i32) ->String{
     format!("/api/users/{}",user_id)
@@ -83,4 +84,37 @@ async fn it_not_accept_unknown_user_id(){
     assert_eq!(response.status(), StatusCode::NOT_FOUND)
 }
 
-async fn it_accepts_and_update_user() {}
+#[tokio::test]
+async fn it_accepts_and_update_user() {
+    let ctx = TestContext::new().await;
+    ctx.setup_db_schema().await;
+
+    insert_joaquin_user(ctx.db.as_ref()).await.unwrap();
+
+    let app = ctx.configure();
+
+    let update_user_params = json!({
+        "username": "Joaquin-mod",
+        "fullName": "Joaquin-Mod",
+        "disabled": true
+    });
+
+    let req = Request::put(update_user_url(1))
+        .header(http::header::CONTENT_TYPE, mime::APPLICATION_JSON.as_ref())
+        .body(Body::from(update_user_params.to_string()))
+        .unwrap();
+    
+    let response = app.oneshot(req).await.unwrap();
+    assert_eq!(response.status(), StatusCode::NO_CONTENT);
+
+    let user_model = schemas::user::Entity::find_by_id(1)
+      .one(ctx.db.as_ref())
+      .await
+      .unwrap();
+
+    let user_model = user_model.unwrap();
+
+    assert_eq!(user_model.full_name, "Joaquin-Mod");
+    assert_eq!(user_model.username, "Joaquin-mod");
+    assert_eq!(user_model.disabled, true);
+}

@@ -50,7 +50,7 @@ impl<'a, C: ConnectionTrait> SeaOrmUserRepository<'a, C> {
 
         active_model.full_name = ActiveValue::Set(change.full_name);
         active_model.username = ActiveValue::set(change.username);
-        active_model.disabled = ActiveValue::Set(false);
+        active_model.disabled = ActiveValue::Set(change.disabled);
 
         active_model.update(self.conn).await?;
 

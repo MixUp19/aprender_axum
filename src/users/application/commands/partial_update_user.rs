@@ -20,6 +20,8 @@ pub struct PartialUpdateUserCommand {
         message = "username must be between 3 and 100 characters"
     ))]
     pub username: Option<String>,
+
+    pub disable: Option<bool>
 }
 
 pub struct PartialUpdateUserCommandHandler {
@@ -39,7 +41,7 @@ impl PartialUpdateUserCommandHandler {
             id: command.id,
             username: command.username,
             full_name: command.full_name,
-            disabled: Some(false)
+            disabled: command.disable
         };
         
         user_repo.partial_update_user(change).await?;
