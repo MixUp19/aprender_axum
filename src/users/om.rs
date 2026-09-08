@@ -25,7 +25,7 @@ pub struct CreatedUser {
     pub id: i32,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UserPage {
     pub id: i32,
