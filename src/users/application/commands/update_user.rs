@@ -44,7 +44,7 @@ impl UpdateUserCommandHandler {
             disabled: command.disabled
         };
         
-        user_repo.update_user(change).await.or_else(|_| Err(ApiError::NotFound))?;
+        user_repo.update_user(change).await?;
         
 
         uow.commit().await?;
