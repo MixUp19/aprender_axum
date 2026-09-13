@@ -1,10 +1,13 @@
 use std::sync::Arc;
 
 use axum::{Json, extract::State, http::StatusCode};
-use secrecy::{ExposeSecret};
+use secrecy::ExposeSecret;
 
 use crate::{
-    context::AppContext, error::ApiError, shared::response::ProblemDetails, users::{
+    context::AppContext,
+    error::ApiError,
+    shared::response::ProblemDetails,
+    users::{
         application::commands::{CreateUserCommand, CreateUserCommandHandler},
         om::{CreateUserParams, CreatedUser},
         persistence::uow::UnitOfWorkFactory,

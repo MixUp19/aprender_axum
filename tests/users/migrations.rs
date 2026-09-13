@@ -1,12 +1,12 @@
-use chrono::{NaiveDate};
+use chrono::NaiveDate;
 use sea_orm::{ActiveModelTrait, ConnectionTrait, DbErr};
 
 pub async fn insert_joaquin_user(
     conn: &impl ConnectionTrait,
 ) -> Result<schemas::user::Model, DbErr> {
     let created_at = NaiveDate::from_ymd_opt(2026, 03, 19)
-    .and_then(|date| date.and_hms_opt(10, 10, 10))
-    .unwrap();
+        .and_then(|date| date.and_hms_opt(10, 10, 10))
+        .unwrap();
 
     let model = schemas::user::ActiveModel {
         id: sea_orm::ActiveValue::NotSet,
@@ -27,8 +27,8 @@ pub async fn insert_bluebird_user(
     conn: &impl ConnectionTrait,
 ) -> Result<schemas::user::Model, DbErr> {
     let created_at = NaiveDate::from_ymd_opt(2026, 03, 19)
-    .and_then(|date| date.and_hms_opt(10, 10, 10))
-    .unwrap();
+        .and_then(|date| date.and_hms_opt(10, 10, 10))
+        .unwrap();
 
     let model = schemas::user::ActiveModel {
         id: sea_orm::ActiveValue::NotSet,
@@ -49,8 +49,8 @@ pub async fn insert_chameleon_user(
     conn: &impl ConnectionTrait,
 ) -> Result<schemas::user::Model, DbErr> {
     let created_at = NaiveDate::from_ymd_opt(2026, 03, 19)
-    .and_then(|date| date.and_hms_opt(10, 10, 10))
-    .unwrap();
+        .and_then(|date| date.and_hms_opt(10, 10, 10))
+        .unwrap();
 
     let model = schemas::user::ActiveModel {
         id: sea_orm::ActiveValue::NotSet,
@@ -66,4 +66,3 @@ pub async fn insert_chameleon_user(
 
     Ok(model)
 }
-

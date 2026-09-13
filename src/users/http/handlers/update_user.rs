@@ -7,9 +7,9 @@ use axum::{
 };
 
 use crate::{
-    shared::response::ProblemDetails,
     context::AppContext,
     error::ApiError,
+    shared::response::ProblemDetails,
     users::{
         application::commands::{UpdateUserCommand, UpdateUserCommandHandler},
         om::UpdateUserParams,
@@ -42,7 +42,7 @@ pub async fn update_user(
         id: user_id,
         username: payload.username,
         full_name: payload.full_name,
-        disabled: payload.disabled
+        disabled: payload.disabled,
     };
 
     let uow_factory = UnitOfWorkFactory::new(Arc::clone(&ctx.conn));

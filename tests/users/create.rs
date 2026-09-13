@@ -1,4 +1,4 @@
-use crate::{setup::{TestContext}, test_ext::IntoValue};
+use crate::{setup::TestContext, test_ext::IntoValue};
 use axum::{
     body::Body,
     http::{self, Request, StatusCode},
@@ -87,9 +87,8 @@ async fn it_validate_required_user_request() {
     assert_eq!(body_content, expected_body)
 }
 
-
 #[tokio::test]
-async fn it_accepts_and_save_valid_user(){
+async fn it_accepts_and_save_valid_user() {
     let ctx = TestContext::new().await;
     ctx.setup_db_schema().await;
     let app = ctx.configure();
@@ -117,12 +116,12 @@ async fn it_accepts_and_save_valid_user(){
     assert_eq!(user_created.id, 1);
 
     let user_model = schemas::user::Entity::find_by_id(user_created.id)
-      .one(ctx.db.as_ref())
-      .await
-      .unwrap();
+        .one(ctx.db.as_ref())
+        .await
+        .unwrap();
 
     assert!(user_model.is_some());
-    
+
     let user_model = user_model.unwrap();
 
     assert_eq!(user_model.id, 1);

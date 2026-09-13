@@ -1,6 +1,5 @@
 use serde::Serialize;
-use utoipa::{ToSchema};
-
+use utoipa::ToSchema;
 
 #[derive(Serialize, ToSchema)]
 pub struct ProblemDetails {
@@ -16,11 +15,11 @@ pub struct Field {
 }
 
 impl Field {
-    pub fn new (field: &str, reason: &str, code: &str) -> Self{
+    pub fn new(field: &str, reason: &str, code: &str) -> Self {
         Self {
             field: field.into(),
-            reason:reason.into(),
-            code: code.into()
+            reason: reason.into(),
+            code: code.into(),
         }
     }
 }

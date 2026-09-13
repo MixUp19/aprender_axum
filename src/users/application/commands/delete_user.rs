@@ -5,19 +5,19 @@ pub struct DeleteUserCommand {
 }
 
 pub struct DeleteUserCommandHandler {
-    pub uow_factory: UnitOfWorkFactory
+    pub uow_factory: UnitOfWorkFactory,
 }
 
 impl DeleteUserCommandHandler {
-    pub async fn handle(&self, command: DeleteUserCommand) -> Result<(), ApiError>{
+    pub async fn handle(&self, command: DeleteUserCommand) -> Result<(), ApiError> {
         println!("deleting the user with id: {}", command.id);
-        
+
         let uow = self.uow_factory.begin().await?;
 
         let user_repository = uow.user_repository();
-        
+
         user_repository.delete_user(command.id).await?;
-        
+
         uow.commit().await?;
 
         Ok(())

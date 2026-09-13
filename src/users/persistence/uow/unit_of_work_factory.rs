@@ -5,11 +5,11 @@ use sea_orm::{DatabaseConnection, DbErr, TransactionTrait};
 use crate::users::persistence::uow::UnitOfWork;
 
 pub struct UnitOfWorkFactory {
-    conn: Arc<DatabaseConnection>
+    conn: Arc<DatabaseConnection>,
 }
 
 impl UnitOfWorkFactory {
-    pub fn new (conn: Arc<DatabaseConnection>) -> Self {
+    pub fn new(conn: Arc<DatabaseConnection>) -> Self {
         Self { conn }
     }
 

@@ -4,7 +4,8 @@ use sea_orm::{
 };
 
 use crate::users::{
-    om::Pagination, persistence::repository::{PartialUpdateUser, SaveNewUser, UpdateUser},
+    om::Pagination,
+    persistence::repository::{PartialUpdateUser, SaveNewUser, UpdateUser},
 };
 
 pub struct SeaOrmUserRepository<'a, C: ConnectionTrait> {
@@ -58,7 +59,10 @@ impl<'a, C: ConnectionTrait> SeaOrmUserRepository<'a, C> {
     }
 
     pub async fn delete_user(&self, id: i32) -> Result<(), DbErr> {
-        let model = self.get_user(id).await?.ok_or(DbErr::RecordNotFound("".to_string()))?;
+        let model = self
+            .get_user(id)
+            .await?
+            .ok_or(DbErr::RecordNotFound("".to_string()))?;
 
         model.delete(self.conn).await?;
 

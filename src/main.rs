@@ -1,12 +1,17 @@
 use core::panic;
 use std::{env, net::SocketAddr, sync::Arc};
 
-use axum::{http::HeaderName};
-use f5a_services::{context::AppContext, routes::{self}};
+use axum::http::HeaderName;
+use f5a_services::{
+    context::AppContext,
+    routes::{self},
+};
 use sea_orm::Database;
 use tower::ServiceBuilder;
 use tower_http::{
-    propagate_header::{PropagateHeaderLayer}, request_id::{MakeRequestUuid, SetRequestIdLayer}, trace::{DefaultMakeSpan, TraceLayer},
+    propagate_header::PropagateHeaderLayer,
+    request_id::{MakeRequestUuid, SetRequestIdLayer},
+    trace::{DefaultMakeSpan, TraceLayer},
 };
 
 #[tokio::main]
@@ -26,7 +31,9 @@ async fn main() {
         .await
         .expect("Failed to connect to database");
 
-    let ctx = AppContext { conn: Arc::new(conn) };
+    let ctx = AppContext {
+        conn: Arc::new(conn),
+    };
 
     let port = 4000;
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
@@ -43,16 +50,15 @@ async fn main() {
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::default().include_headers(true)),
         )
-        .layer(
-            PropagateHeaderLayer::new(HeaderName::from_static("x-request-id"))
-        );
-    
+        .layer(PropagateHeaderLayer::new(HeaderName::from_static(
+            "x-request-id",
+        )));
+
     let router = routes::router().with_state(ctx).layer(service_layer);
-    
+
     tracing::info!(addr = ?listener.local_addr().unwrap(), app_name = "f5a_services_es","Listening");
 
     axum::serve(listener, router).await.unwrap_or_else(|err| {
         panic!("failed to start server: {}", err);
     });
 }
-

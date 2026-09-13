@@ -1,5 +1,5 @@
-mod user_repository;
 mod changes;
+mod user_repository;
 
-pub use user_repository::*;
 pub use changes::*;
+pub use user_repository::*;

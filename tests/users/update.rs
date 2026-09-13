@@ -1,15 +1,18 @@
-use axum::{body::Body, http::{self, Request, StatusCode}};
+use crate::{setup::TestContext, test_ext::IntoValue, users::migrations::insert_joaquin_user};
+use axum::{
+    body::Body,
+    http::{self, Request, StatusCode},
+};
 use sea_orm::EntityTrait;
 use serde_json::json;
 use tower::ServiceExt;
-use crate::{setup::TestContext, test_ext::IntoValue, users::migrations::insert_joaquin_user};
 
-fn update_user_url(user_id: i32) ->String{
-    format!("/api/users/{}",user_id)
+fn update_user_url(user_id: i32) -> String {
+    format!("/api/users/{}", user_id)
 }
 
 #[tokio::test]
-async fn it_not_accept_empty_user_request(){
+async fn it_not_accept_empty_user_request() {
     let ctx = TestContext::new().await;
     let app = ctx.configure();
 
@@ -24,7 +27,7 @@ async fn it_not_accept_empty_user_request(){
 }
 
 #[tokio::test]
-async fn it_validate_required_user_request_to_update(){
+async fn it_validate_required_user_request_to_update() {
     let ctx = TestContext::new().await;
     let app = ctx.configure();
     let update_user_params = json!({
@@ -64,7 +67,7 @@ async fn it_validate_required_user_request_to_update(){
 }
 
 #[tokio::test]
-async fn it_not_accept_unknown_user_id(){
+async fn it_not_accept_unknown_user_id() {
     let ctx = TestContext::new().await;
     ctx.setup_db_schema().await;
     let app = ctx.configure();
@@ -78,7 +81,7 @@ async fn it_not_accept_unknown_user_id(){
         .header(http::header::CONTENT_TYPE, mime::APPLICATION_JSON.as_ref())
         .body(Body::from(update_user_params.to_string()))
         .unwrap();
-    
+
     let response = app.oneshot(req).await.unwrap();
 
     assert_eq!(response.status(), StatusCode::NOT_FOUND)
@@ -103,14 +106,14 @@ async fn it_accepts_and_update_user() {
         .header(http::header::CONTENT_TYPE, mime::APPLICATION_JSON.as_ref())
         .body(Body::from(update_user_params.to_string()))
         .unwrap();
-    
+
     let response = app.oneshot(req).await.unwrap();
     assert_eq!(response.status(), StatusCode::NO_CONTENT);
 
     let user_model = schemas::user::Entity::find_by_id(1)
-      .one(ctx.db.as_ref())
-      .await
-      .unwrap();
+        .one(ctx.db.as_ref())
+        .await
+        .unwrap();
 
     let user_model = user_model.unwrap();
 

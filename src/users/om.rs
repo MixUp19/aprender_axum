@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use secrecy::{SecretString};
+use secrecy::SecretString;
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
@@ -73,4 +73,3 @@ pub struct PartialUserParams {
     /// if true, the user will bw prevented form logging in
     pub disabled: Option<bool>,
 }
-

@@ -1,15 +1,18 @@
-use axum::{body::Body, http::{self, Request, StatusCode}};
+use axum::{
+    body::Body,
+    http::{self, Request, StatusCode},
+};
 use serde_json::json;
 use tower::ServiceExt;
 
 use crate::{setup::TestContext, test_ext::IntoValue, users::migrations::insert_joaquin_user};
 
-fn user_detail_url(user_id: i32) ->String{
-    format!("/api/users/{}",user_id)
+fn user_detail_url(user_id: i32) -> String {
+    format!("/api/users/{}", user_id)
 }
 
 #[tokio::test]
-async fn it_read_user_detail(){
+async fn it_read_user_detail() {
     let ctx = TestContext::new().await;
     ctx.setup_db_schema().await;
 
@@ -43,7 +46,7 @@ async fn it_read_user_detail(){
 
 #[tokio::test]
 
-async fn it_returns_not_found_for_missing_user(){
+async fn it_returns_not_found_for_missing_user() {
     let ctx = TestContext::new().await;
     ctx.setup_db_schema().await;
 
@@ -53,7 +56,7 @@ async fn it_returns_not_found_for_missing_user(){
         .header(http::header::CONTENT_TYPE, mime::APPLICATION_JSON.as_ref())
         .body(Body::empty())
         .unwrap();
-    
+
     let response = app.oneshot(req).await.unwrap();
 
     assert_eq!(response.status(), StatusCode::NOT_FOUND);

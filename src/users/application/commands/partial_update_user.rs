@@ -1,7 +1,10 @@
 use axum::response::NoContent;
 use validator::Validate;
 
-use crate::{error::ApiError, users::persistence::{repository::{PartialUpdateUser}, uow::UnitOfWorkFactory}};
+use crate::{
+    error::ApiError,
+    users::persistence::{repository::PartialUpdateUser, uow::UnitOfWorkFactory},
+};
 
 #[derive(Validate)]
 pub struct PartialUpdateUserCommand {
@@ -21,7 +24,7 @@ pub struct PartialUpdateUserCommand {
     ))]
     pub username: Option<String>,
 
-    pub disable: Option<bool>
+    pub disable: Option<bool>,
 }
 
 pub struct PartialUpdateUserCommandHandler {
@@ -41,11 +44,10 @@ impl PartialUpdateUserCommandHandler {
             id: command.id,
             username: command.username,
             full_name: command.full_name,
-            disabled: command.disable
+            disabled: command.disable,
         };
-        
+
         user_repo.partial_update_user(change).await?;
-        
 
         uow.commit().await?;
 

@@ -7,8 +7,13 @@ use axum::{
 };
 
 use crate::{
-    context::AppContext, error::ApiError, shared::response::ProblemDetails, users::{
-        application::commands::{PartialUpdateUserCommand, PartialUpdateUserCommandHandler}, om::PartialUserParams, persistence::uow::UnitOfWorkFactory,
+    context::AppContext,
+    error::ApiError,
+    shared::response::ProblemDetails,
+    users::{
+        application::commands::{PartialUpdateUserCommand, PartialUpdateUserCommandHandler},
+        om::PartialUserParams,
+        persistence::uow::UnitOfWorkFactory,
     },
 };
 
@@ -39,7 +44,7 @@ pub async fn partial_update_user(
         id: user_id,
         username: payload.username,
         full_name: payload.full_name,
-        disable: payload.disabled
+        disable: payload.disabled,
     };
 
     let command_handler = PartialUpdateUserCommandHandler { uow_factory };
