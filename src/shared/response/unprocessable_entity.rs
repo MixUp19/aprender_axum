@@ -1,10 +1,6 @@
 use std::borrow::Cow;
 
-use axum::{
-    Json,
-    http::{ StatusCode},
-    response::IntoResponse,
-};
+use axum::{Json, http::StatusCode, response::IntoResponse};
 use validator::{ValidationError, ValidationErrors};
 
 use crate::shared::response::{Field, ProblemDetails};
@@ -18,7 +14,7 @@ impl IntoResponse for UnprocessableParams {
         //println!("validation errors: {}", self.0);
 
         let fields_with_errors = self.0.into_fields();
-    
+
         let problem_details = ProblemDetails {
             detail: "validation failed".into(),
             errors: fields_with_errors,
@@ -39,15 +35,14 @@ impl IntoFields for ValidationErrors {
         let mut fields = Vec::with_capacity(field_errors.len());
 
         fields.extend(field_errors.into_iter().map(|(field_name, errs)| {
+            let error: &ValidationError = &errs[0];
 
-          let error: &ValidationError = &errs[0];
+            let field_message = error.message.as_ref().unwrap_or(&INVALID_DEFAULT_MESSAGE);
 
-          let field_message = error.message.as_ref().unwrap_or(&INVALID_DEFAULT_MESSAGE);
-
-          Field::new(&field_name,field_message,&error.code)
+            Field::new(&field_name, field_message, &error.code)
         }));
 
-        fields.sort_by(|a,b| a.field.to_lowercase().cmp(&b.field.to_lowercase()));
+        fields.sort_by_key(|a| a.field.to_lowercase());
 
         fields
     }

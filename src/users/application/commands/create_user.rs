@@ -1,7 +1,10 @@
 use chrono;
 use validator::Validate;
 
-use crate::{error::ApiError, users::persistence::{repository::{SaveNewUser}, uow::UnitOfWorkFactory}};
+use crate::{
+    error::ApiError,
+    users::persistence::{repository::SaveNewUser, uow::UnitOfWorkFactory},
+};
 
 #[derive(Validate)]
 pub struct CreateUserCommand {
@@ -34,7 +37,7 @@ pub struct CreateUserCommand {
     #[validate(must_match(other = "password", message = "password do not match"))]
     pub confirm_password: String,
 
-    pub creator_id: i32
+    pub creator_id: i32,
 }
 
 pub struct CreateUserCommandHandler {
@@ -57,11 +60,10 @@ impl CreateUserCommandHandler {
             password: command.password,
             disabled: false,
             created_at: created_at.naive_local(),
-            creator_id: command.creator_id
+            creator_id: command.creator_id,
         };
-        
+
         let model = user_repo.insert(change).await?;
-        
 
         uow.commit().await?;
 

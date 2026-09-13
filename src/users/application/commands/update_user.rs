@@ -1,7 +1,10 @@
 use axum::response::NoContent;
 use validator::Validate;
 
-use crate::{error::ApiError, users::persistence::{repository::{UpdateUser}, uow::UnitOfWorkFactory}};
+use crate::{
+    error::ApiError,
+    users::persistence::{repository::UpdateUser, uow::UnitOfWorkFactory},
+};
 
 #[derive(Validate)]
 pub struct UpdateUserCommand {
@@ -41,11 +44,10 @@ impl UpdateUserCommandHandler {
             id: command.id,
             username: command.username,
             full_name: command.full_name,
-            disabled: command.disabled
+            disabled: command.disabled,
         };
-        
-        user_repo.update_user(change).await.or_else(|_| Err(ApiError::NotFound))?;
-        
+
+        user_repo.update_user(change).await?;
 
         uow.commit().await?;
 

@@ -2,9 +2,7 @@ use axum::{http::StatusCode, response::IntoResponse};
 use sea_orm::DbErr;
 use validator::ValidationErrors;
 
-use crate::{
-    shared::response::UnprocessableParams,
-};
+use crate::shared::response::UnprocessableParams;
 
 #[derive(thiserror::Error, Debug)]
 pub enum ApiError {
@@ -33,11 +31,10 @@ impl From<DbErr> for ApiError {
     fn from(value: DbErr) -> Self {
         match value {
             DbErr::RecordNotFound(_) => Self::NotFound,
-            _ => Self::Unexpected(Box::new(value))
-        }   
+            _ => Self::Unexpected(Box::new(value)),
+        }
     }
 }
-
 
 impl From<ValidationErrors> for ApiError {
     fn from(value: ValidationErrors) -> Self {

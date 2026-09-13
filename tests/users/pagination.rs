@@ -1,23 +1,29 @@
-use axum::{body::Body, http::{self, Request, StatusCode}};
+use axum::{
+    body::Body,
+    http::{self, Request, StatusCode},
+};
 use f5a_services::users::om::UserPage;
 use serde_json::json;
 use tower::ServiceExt;
 
-use crate::{setup::TestContext, test_ext::IntoValue, users::migrations::{insert_bluebird_user, insert_chameleon_user, insert_joaquin_user}};
+use crate::{
+    setup::TestContext,
+    test_ext::IntoValue,
+    users::migrations::{insert_bluebird_user, insert_chameleon_user, insert_joaquin_user},
+};
 
-fn create_pagination_query(page: i32, page_size:i32) -> String{
+fn create_pagination_query(page: i32, page_size: i32) -> String {
     format!("/api/users?page={}&page_size={}", page, page_size)
 }
 
 #[tokio::test]
-async fn it_reads_paginated_users(){
+async fn it_reads_paginated_users() {
     let ctx = TestContext::new().await;
     ctx.setup_db_schema().await;
 
     insert_joaquin_user(ctx.db.as_ref()).await.unwrap();
     insert_bluebird_user(ctx.db.as_ref()).await.unwrap();
     insert_chameleon_user(ctx.db.as_ref()).await.unwrap();
-
 
     let app = ctx.configure();
 
@@ -99,7 +105,7 @@ async fn it_reads_paginated_users(){
 }
 
 #[tokio::test]
-async fn it_reads_empty_pagianted_users(){
+async fn it_reads_empty_pagianted_users() {
     let ctx = TestContext::new().await;
     ctx.setup_db_schema().await;
     let app = ctx.configure();
@@ -116,18 +122,16 @@ async fn it_reads_empty_pagianted_users(){
     let value = response.into_value::<Vec<UserPage>>().await;
 
     assert_eq!(value.len(), 0);
-
 }
 
 #[tokio::test]
-async fn it_reads_paginated_users_with_idiomatic_json(){
+async fn it_reads_paginated_users_with_idiomatic_json() {
     let ctx = TestContext::new().await;
     ctx.setup_db_schema().await;
 
     insert_joaquin_user(ctx.db.as_ref()).await.unwrap();
     insert_bluebird_user(ctx.db.as_ref()).await.unwrap();
     insert_chameleon_user(ctx.db.as_ref()).await.unwrap();
-
 
     let app = ctx.configure();
 

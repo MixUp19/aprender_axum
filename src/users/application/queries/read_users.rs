@@ -1,13 +1,19 @@
 use std::sync::Arc;
 
-use crate::{error::ApiError, users::{om::{Pagination, UserPage}, persistence::uow::UnitOfWorkFactory}};
+use crate::{
+    error::ApiError,
+    users::{
+        om::{Pagination, UserPage},
+        persistence::uow::UnitOfWorkFactory,
+    },
+};
 
 pub struct ReadUsersQuery {
-    pub pagination: Pagination
+    pub pagination: Pagination,
 }
 
 pub struct ReadUsersQueryHandler {
-    pub uow_factory: Arc<UnitOfWorkFactory>
+    pub uow_factory: Arc<UnitOfWorkFactory>,
 }
 
 impl ReadUsersQueryHandler {
@@ -21,11 +27,10 @@ impl ReadUsersQueryHandler {
 
         let user_repository = uow.user_repository();
 
-        let model = user_repository.get_users(query.pagination)
-        .await?;
+        let model = user_repository.get_users(query.pagination).await?;
 
         uow.commit().await?;
-        
+
         let page = model.into_iter().map(Into::into).collect();
 
         Ok(page)

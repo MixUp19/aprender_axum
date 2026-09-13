@@ -18,7 +18,7 @@ impl IntoActiveModel<schemas::user::ActiveModel> for SaveNewUser {
             password: ActiveValue::Set(self.password),
             disabled: ActiveValue::set(self.disabled),
             created_at: ActiveValue::set(self.created_at),
-            creator_id: ActiveValue::set(self.creator_id)
+            creator_id: ActiveValue::set(self.creator_id),
         }
     }
 }
