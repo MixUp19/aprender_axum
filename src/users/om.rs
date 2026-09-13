@@ -1,14 +1,15 @@
 use chrono::{DateTime, Utc};
-use secrecy::SecretString;
+use secrecy::{SecretString};
 use serde::{Deserialize, Serialize};
+use utoipa::{IntoParams, ToSchema};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, IntoParams)]
 pub struct Pagination {
     pub page: u64,
     pub page_size: u64,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateUserParams {
     pub full_name: String,
@@ -16,16 +17,18 @@ pub struct CreateUserParams {
     pub username: String,
     pub website: String,
     pub age: u8,
+    #[schema(value_type = String, format = "password", example = "MiPassw0rdSegura!")]
     pub password: SecretString,
+    #[schema(value_type = String, format = "password", example = "MiPassw0rdSegura!")]
     pub confirm_password: SecretString,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct CreatedUser {
     pub id: i32,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UserPage {
     pub id: i32,
@@ -49,7 +52,7 @@ impl From<schemas::user::Model> for UserPage {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateUserParams {
     pub username: String,
@@ -57,10 +60,17 @@ pub struct UpdateUserParams {
     pub disabled: bool,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct PartialUserParams {
+    /// unique alphanumeric identifier for the use
+    #[schema(example = "MixUp19")]
     pub username: Option<String>,
+    ///user legal name
+    #[schema(example = "Joaquin")]
     pub full_name: Option<String>,
+    /// flag to enable or disable the user account
+    /// if true, the user will bw prevented form logging in
     pub disabled: Option<bool>,
 }
+

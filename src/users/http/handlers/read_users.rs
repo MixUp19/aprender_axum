@@ -4,6 +4,20 @@ use axum::{Json, extract::{Query, State}};
 
 use crate::{context::AppContext, error::ApiError, users::{application::queries::{ReadUsersQuery, ReadUsersQueryHandler}, om::{Pagination, UserPage}, persistence::uow::UnitOfWorkFactory}};
 
+
+#[utoipa::path(
+        get,
+        path = "/api/users",
+        tag = "user",
+        summary = "it returns every user into range in page ordered descending",
+        params(
+            Pagination
+        ),
+        responses(
+            (status= OK, body=Vec<UserPage>, description = "Get all users paginated"),
+            (status = INTERNAL_SERVER_ERROR, description = "Something went wrong")
+        )
+    )]
 pub async fn read_users(
     State(ctx): State<AppContext>,
     Query(pagination): Query<Pagination>,

@@ -4,15 +4,25 @@ use axum::{Json, extract::State, http::StatusCode};
 use secrecy::{ExposeSecret};
 
 use crate::{
-    context::AppContext,
-    error::ApiError,
-    users::{
+    context::AppContext, error::ApiError, shared::response::ProblemDetails, users::{
         application::commands::{CreateUserCommand, CreateUserCommandHandler},
         om::{CreateUserParams, CreatedUser},
         persistence::uow::UnitOfWorkFactory,
     },
 };
 
+#[utoipa::path(
+        post,
+        path = "/api/users",
+        tag = "user",
+        summary = "it creates a new  user",
+        request_body = CreateUserParams,
+        responses(
+            (status= OK, body=CreatedUser, description = "User was created"),
+            (status = UNPROCESSABLE_ENTITY, body = ProblemDetails, description = "The object was not correct"),
+            (status = INTERNAL_SERVER_ERROR, description = "Something went wrong")
+        )
+    )]
 #[tracing::instrument(skip(ctx), err)]
 pub async fn create_user(
     State(ctx): State<AppContext>,

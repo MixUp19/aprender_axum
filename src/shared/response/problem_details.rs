@@ -1,13 +1,14 @@
 use serde::Serialize;
+use utoipa::{ToSchema};
 
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct ProblemDetails {
     pub detail: String,
     pub errors: Vec<Field>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct Field {
     pub field: String,
     pub reason: String,
